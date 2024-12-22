@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}My Favorites{% endblock %}
+
+{% block content %}
+<div class="container mt-5 pt-5">
+    <h2 class="mb-4">My Favorite Recipes</h2>
+
+    {% if favorites %}
+        <div class="row">
+            {% for recipe in favorites %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    {% if recipe.image_name %}
+                    <img src="{{ url_for('food_images', filename=recipe.image_name) }}" class="card-img-top" alt="{{ recipe.title }}">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='images/chef.gif') }}" class="card-img-top" alt="Default Recipe Image">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ recipe.title }}</h5>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                {% if recipe.prep_time and recipe.cook_time %}
+                                    Prep: {{ recipe.prep_time }} mins | Cook: {{ recipe.cook_time }} mins
+                                {% endif %}
+                            </small>
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{{ url_for('recipe_detail', recipe_title=recipe.title) }}" 
+                               class="btn btn-outline-primary">View Recipe</a>
+                            <form action="{{ url_for('remove_favorite', recipe_title=recipe.title) }}" method="POST" style="display: inline;">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <i class="fas fa-heart-broken"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-heart fa-4x text-muted mb-3"></i>
+            <h3>No Favorite Recipes Yet</h3>
+            <p class="text-muted">Start exploring recipes and save your favorites!</p>
+            <a href="{{ url_for('search') }}" class="btn btn-primary mt-3">
+                Explore Recipes
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
